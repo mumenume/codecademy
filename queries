@@ -1,0 +1,68 @@
+SELECT * FROM users
+LIMIT 10;
+
+SELECT * FROM progress
+LIMIT 10;
+
+/*top 25 schools*/
+SELECT email_domain, COUNT(*)
+FROM users
+WHERE email_domain LIKE '%.edu'
+GROUP BY email_domain
+ORDER BY 2 DESC
+LIMIT 25;
+
+/*how many users are .edu from NY*/
+select count(user_id)
+from users
+where email_domain like '%.edu'
+and city = 'New York';
+
+/*how many users are .edu from NY* using mobile app*/
+select count(user_id)
+from users
+where email_domain like '%.edu'
+and city = 'New York'
+and mobile_app is not null ;
+
+/*Visitors in each hour*/
+SELECT strftime('%H', sign_up_at) AS 'Hour',
+       count(user_id) AS 'Visitors'
+FROM users
+GROUP BY 1
+ORDER BY 1;
+
+SELECT *
+FROM users
+JOIN progress ON users.user_id
+LIMIT 20;
+
+/*Do different schools (.edu domains) prefer different courses?*/
+SELECT email_domain AS 'School',
+       count(learn_cpp) as 'CPP',
+       count(learn_html) AS 'HTML',
+       count(learn_java) AS 'JAVA',
+       count(learn_javascript) AS 'JS',
+       count(learn_sql) AS 'SQL'
+
+FROM users
+LEFT JOIN progress ON users.user_id
+WHERE email_domain LIKE '%.edu'
+GROUP BY 1;
+
+/*What courses are the New Yorkers students taking?*/
+SELECT /*break for schools: email_domain AS 'School'*/
+       city,
+       count(learn_cpp) as 'CPP',
+       count(learn_html) AS 'HTML',
+       count(learn_java) AS 'JAVA',
+       count(learn_javascript) AS 'JS',
+       count(learn_sql) AS 'SQL'
+
+FROM users
+LEFT JOIN progress ON users.user_id
+WHERE email_domain LIKE '%.edu'
+AND city = 'New York'
+GROUP BY 1;
+
+
